@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">awesome</string>
+    <string name="app_name">Awesome</string>
+    <color name="white">#FFF</color>
 </resources>

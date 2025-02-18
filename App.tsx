@@ -1,118 +1,216 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// In App.js in a new project
 
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  NavigationContainer,
+  createNavigationContainerRef,
+} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, Linking, AppState, Alert} from 'react-native';
+import Splash from './src/screens/Auth/Splash/Splash';
+import Profile from './src/screens/Profile/Profile';
+import Home from './src/screens/Home/Home';
+import Notification from './src/screens/Notification/Notification';
+import messaging from '@react-native-firebase/messaging';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
+import notifee, {EventType, AndroidImportance} from '@notifee/react-native';
+import images from './src/utils/images';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Stack = createNativeStackNavigator();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+let appOpenedFromBackground = false;
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const linking = {
+  // enabled: 'auto' /* Automatically generate paths for all screens */,
+  prefixes: ['deeplinking://'], // Replace with your scheme and domain
+  config: {
+    screens: {
+      home: 'home',
+      notification: 'notification',
+      profile: 'profile',
+    },
+  },
+};
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+function RootStack({navigation}: any) {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    requestUserPermission();
+    getToken();
+    // bootstrap();// commented out for now
+  }, []);
+
+  // async function bootstrap() {
+  //   await inAppMessaging().setMessagesDisplaySuppressed(true);
+  // }
+
+  // Request permission for notifications
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
   };
 
+  // Subscribe to events
+  useEffect(() => {
+    return notifee.onForegroundEvent(({type, detail}) => {
+      console.log('type -->> ', JSON.stringify(type));
+      console.log('details -->> ', JSON.stringify(detail));
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification);
+          const route = detail?.notification?.data?.route; // Extract the route from notification data
+          if (route && navigationRef.isReady()) {
+            navigationRef.navigate(route); // Navigate to the route
+          }
+          break;
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    bootstrap()
+      .then(() => setLoading(false))
+      .catch(console.error);
+  }, []);
+
+  // Bootstrap sequence function
+  async function bootstrap() {
+    const initialNotification = await notifee.getInitialNotification();
+
+    if (initialNotification) {
+      console.log(
+        'Notification caused application to open',
+        initialNotification.notification,
+      );
+      console.log(
+        'Press action used to open the app',
+        initialNotification.pressAction,
+      );
+    }
+  }
+
+  // Get the FCM token
+  const getToken = async () => {
+    const token = await messaging().getToken();
+    console.log('FCM Token:', token);
+  };
+
+  // Listen for foreground messages
+  messaging().onMessage(async remoteMessage => {
+    if (!remoteMessage.notification) {
+      console.error('Notification payload is missing.');
+      return;
+    }
+    console.log('FCM Message:', JSON.stringify(remoteMessage, null, 2));
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH, // Ensure importance is HIGH for visibility
+      vibration: true, // Enable vibration for the channel
+    });
+
+    const route = remoteMessage?.data?.link?.replace('deeplinking://', '');
+
+    await notifee.displayNotification({
+      title: remoteMessage.notification.title || 'Notification',
+      body: remoteMessage.notification.body || 'You have a new message.',
+      android: {
+        channelId,
+        smallIcon: 'ic_notification', // Reference the icon resource
+        pressAction: {
+          id: 'open_route',
+        },
+      },
+      data: {
+        route: route, // Specify the route to navigate to
+      },
+    });
+  });
+
+  useEffect(() => {
+    // Handle deep link when the app is opened by a notification
+    const handleDeepLink = (event: any) => {
+      console.log('event ==>> ', JSON.stringify(event));
+      const url = event.url;
+      console.log('Deep link received:', url); // Debug the URL
+      if (url) {
+        const route = url.replace('deeplinking://', '');
+        console.log('Route is :', route); // Log the route to confirm
+        if (navigationRef.isReady() && route) {
+          navigationRef.navigate(route);
+        }
+      }
+    };
+
+    // Listen for deep links
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    // Handle case where the app is already running and opened via a deep link
+    Linking.getInitialURL().then(url => {
+      if (url) handleDeepLink({url});
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: string) => {
+      console.log('nextAppState ==>> ', JSON.stringify(nextAppState));
+
+      if (nextAppState === 'active') {
+        if (appOpenedFromBackground) {
+          console.log(
+            'App resumed from background. Check for external triggers.',
+          );
+        } else {
+          console.log('App opened normally.');
+        }
+        appOpenedFromBackground = false;
+      } else if (nextAppState === 'background') {
+        appOpenedFromBackground = true;
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    return () => subscription.remove();
+  }, []);
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Stack.Navigator
+      // initialRouteName="Splash"
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen name="splash" component={Splash} />
+      <Stack.Screen name="home" component={Home} />
+      <Stack.Screen name="profile" component={Profile} />
+      <Stack.Screen name="notification" component={Notification} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+export const navigationRef = createNavigationContainerRef();
 
-export default App;
+export default function App() {
+  return (
+    <NavigationContainer linking={linking} ref={navigationRef}>
+      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+      <RootStack />
+    </NavigationContainer>
+  );
+}
