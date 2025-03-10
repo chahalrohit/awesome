@@ -44,6 +44,8 @@ function RootStack({navigation}: any) {
   //   await inAppMessaging().setMessagesDisplaySuppressed(true);
   // }
 
+  console.log('Hello World!');
+
   // Request permission for notifications
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
