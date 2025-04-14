@@ -13,23 +13,23 @@ import {RAZOR_PAY_KEY_ID} from '@env';
 const RazorPay = () => {
   const handlePayment = async () => {
     try {
-      const response = await axios.post(
-        'http://<YOUR_BACKEND_URL>/create-order',
-        {
-          amount: 50, // ₹50
-        },
-      );
+      // const response = await axios.post(
+      //   'http://<YOUR_BACKEND_URL>/create-order',
+      //   {
+      //     amount: 50, // ₹50
+      //   },
+      // );
 
-      const order = response.data;
+      // const order = response.data;
 
       const options = {
         description: 'Credits towards consultation',
         image: 'https://i.imgur.com/3g7nmJC.png',
         currency: 'INR',
         key: RAZOR_PAY_KEY_ID,
-        amount: order.amount.toString(),
-        name: 'foo',
-        order_id: order.id, // <-- Required
+        amount: '5000',
+        name: 'Rohit Chahal',
+        // order_id: order.id, // <-- Required
         prefill: {
           email: 'void@razorpay.com',
           contact: '9191919191',
