@@ -1,7 +1,13 @@
 # OSX
 #
 .DS_Store
+
+# Environment variables
 .env
+.env.*
+!.env.example
+.env.production
+.env.staging
 
 # Xcode
 #
