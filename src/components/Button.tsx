@@ -10,6 +10,7 @@ import colors from '../utils/colors';
 import {horizontalSpace, wp} from '../utils/dimensions';
 import Fonts from '../utils/fonts';
 import CustomText from './CustomText';
+import TextStyles from '../utils/textStyles';
 
 interface ButtonProps {
   buttonName: string;
@@ -26,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <CustomText style={[styles.textStyle, extTextStyle]}>
+      <CustomText style={[TextStyles.button, styles.textStyle, extTextStyle]}>
         {buttonName}
       </CustomText>
     </TouchableOpacity>
@@ -47,6 +48,5 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.white,
     fontFamily: Fonts.OPENSANS_SEMIBOLD,
-    fontSize: wp(4),
   },
 });

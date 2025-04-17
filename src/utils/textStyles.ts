@@ -23,5 +23,9 @@ const TextStyles = StyleSheet.create({
     fontFamily: Fonts.OPENSANS_LIGHT,
     fontSize: wp(2.5),
   },
+  button: {
+    fontFamily: Fonts.OPENSANS_SEMIBOLD,
+    fontSize: wp(4),
+  },
 });
 export default TextStyles;
