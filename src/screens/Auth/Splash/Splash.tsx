@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Linking, View} from 'react-native';
 import Fastimage from 'react-native-fast-image';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
-import Images from '../../../utils/Images';
+import images from '../../../utils/images';
 import styles from './Splash.styles';
 
 const Splash = ({navigation}: {navigation: any}) => {
@@ -119,7 +119,7 @@ const Splash = ({navigation}: {navigation: any}) => {
 
   return (
     <View style={styles.container}>
-      <Fastimage source={Images} style={{width: 300, height: 300}} />
+      <Fastimage source={images.awesome} style={{width: 300, height: 300}} />
     </View>
   );
 };

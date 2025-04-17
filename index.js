@@ -9,6 +9,8 @@ import {name as appName} from './app.json';
 import notifee, {EventType, AndroidImportance} from '@notifee/react-native';
 import {navigationRef} from './App';
 import RazoyPay from './src/screens/PaymentGateways/RazorPay/RazoyPay';
+import Button from './src/components/Button';
+import UseState from './src/hooks/UseState';
 LogBox.ignoreAllLogs();
 
 // Register background handler
@@ -57,4 +59,4 @@ if (!firebase.apps.length) {
 }
 console.log(firebase.apps); // Should return an array with your Firebase app
 
-AppRegistry.registerComponent(appName, () => RazoyPay);
+AppRegistry.registerComponent(appName, () => UseState);
