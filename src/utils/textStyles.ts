@@ -1,28 +1,27 @@
 import {StyleSheet} from 'react-native';
-import Fonts from './fonts';
 import {wp} from '../utils/dimensions';
+import Fonts from './fonts';
 
 const TextStyles = StyleSheet.create({
   heading: {
-    fontFamily: Fonts.POPPINS_BOLD,
+    fontFamily: Fonts.OPENSANS_BOLD,
     fontSize: wp(6),
   },
   subHeading: {
-    fontFamily: Fonts.POPPINS_SEMI_BOLD,
+    fontFamily: Fonts.OPENSANS_SEMIBOLD,
     fontSize: wp(5),
   },
   body: {
-    fontFamily: Fonts.POPPINS_REGULAR,
+    fontFamily: Fonts.OPENSANS_REGULAR,
     fontSize: wp(4),
   },
   caption: {
-    fontFamily: Fonts.POPPINS_MEDIUM,
+    fontFamily: Fonts.OPENSANS_MEDIUM,
     fontSize: wp(3.5),
   },
   tiny: {
-    fontFamily: Fonts.POPPINS_LIGHT,
+    fontFamily: Fonts.OPENSANS_LIGHT,
     fontSize: wp(2.5),
   },
 });
-
 export default TextStyles;

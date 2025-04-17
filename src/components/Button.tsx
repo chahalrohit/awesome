@@ -1,29 +1,32 @@
-import React, {Children} from 'react';
+import React from 'react';
 import {
-  TouchableOpacity,
-  Text,
   GestureResponderEvent,
-  StyleSheet,
   StyleProp,
+  StyleSheet,
+  TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import {verticalSpace, horizontalSpace, wp} from '../utils/dimensions';
 import colors from '../utils/colors';
+import {horizontalSpace, wp} from '../utils/dimensions';
+import Fonts from '../utils/fonts';
 import CustomText from './CustomText';
-import TextStyles from '../utils/textStyles';
 
 interface ButtonProps {
   buttonName: string;
   onPress: (event: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
+  extTextStyle?: StyleProp<ViewStyle>;
 }
 
-const Button: React.FC<ButtonProps> = ({onPress, buttonName, style = {}}) => {
+const Button: React.FC<ButtonProps> = ({
+  onPress,
+  buttonName,
+  style = {},
+  extTextStyle,
+}) => {
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <CustomText
-        weight="medium"
-        style={[TextStyles.body, {color: colors.white}]}>
+      <CustomText style={[styles.textStyle, extTextStyle]}>
         {buttonName}
       </CustomText>
     </TouchableOpacity>
@@ -40,5 +43,10 @@ const styles = StyleSheet.create({
     height: wp(11),
     borderRadius: wp(2),
     backgroundColor: colors.baseColor,
+  },
+  textStyle: {
+    color: colors.white,
+    fontFamily: Fonts.OPENSANS_SEMIBOLD,
+    fontSize: wp(4),
   },
 });

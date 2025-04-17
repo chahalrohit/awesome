@@ -1,12 +1,10 @@
 const Fonts = {
-  POPPINS_THIN: 'Poppins-Thin',
-  POPPINS_EXTRA_LIGHT: 'Poppins-ExtraLight',
-  POPPINS_LIGHT: 'Poppins-Light',
-  POPPINS_REGULAR: 'Poppins-Regular',
-  POPPINS_MEDIUM: 'Poppins-Medium',
-  POPPINS_SEMI_BOLD: 'Poppins-SemiBold',
-  POPPINS_BOLD: 'Poppins-Bold',
-  POPPINS_EXTRA_BOLD: 'Poppins-ExtraBold',
+  OPENSANS_BOLD: 'OpenSans-Bold',
+  OPENSANS_EXTRABOLD: 'OpenSans-ExtraBold',
+  OPENSANS_LIGHT: 'OpenSans-Light',
+  OPENSANS_MEDIUM: 'OpenSans-Medium',
+  OPENSANS_REGULAR: 'OpenSans-Regular',
+  OPENSANS_SEMIBOLD: 'OpenSans-SemiBold',
 };
 
 export default Fonts;
