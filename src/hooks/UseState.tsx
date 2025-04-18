@@ -16,9 +16,7 @@ const UseState = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <CustomText style={TextStyles.heading}>Use of useState</CustomText>
-        <CustomText
-          weight="medium"
-          style={[TextStyles.caption, {alignSelf: 'center'}]}>
+        <CustomText style={[TextStyles.caption, {alignSelf: 'center'}]}>
           Value is {count}
         </CustomText>
         <Button
