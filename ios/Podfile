@@ -51,11 +51,13 @@ if linkage != nil
 end
 
 target 'awesome' do
+  use_frameworks! :linkage => linkage.to_sym if linkage != nil
   config = use_native_modules!
 
   # Flags change depending on the env values.
   flags = get_default_flags()
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
   pod 'GoogleUtilities', :modular_headers => true;
   pod 'FirebaseCore', :modular_headers => true;
   pod 'FirebaseCoreExtension', :modular_headers => true;
