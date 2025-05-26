@@ -38,6 +38,7 @@
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "^4.10.0",
     "react-native-size-matters": "^0.4.2",
+    "react-native-ssl-pinning": "^1.5.9",
     "react-native-svg": "^15.11.2",
     "react-native-vector-icons": "^10.2.0",
     "tailwind-react-native-classnames": "^1.5.1",
