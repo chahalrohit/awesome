@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Linking, View} from 'react-native';
 import Fastimage from 'react-native-fast-image';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
-import images from '../../../utils/images';
+import images from '../../../utils/Images';
 import styles from './Splash.styles';
 
 const Splash = ({navigation}: {navigation: any}) => {
