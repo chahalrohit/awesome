@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Linking, View} from 'react-native';
 import Fastimage from 'react-native-fast-image';
 import {LogLevel, OneSignal} from 'react-native-onesignal';
-import images from '../../../utils/images';
+import images from '../../../utils/Images';
 import styles from './Splash.styles';
 
 const Splash = ({navigation}: {navigation: any}) => {
@@ -53,7 +53,7 @@ const Splash = ({navigation}: {navigation: any}) => {
       console.log('checkInitialNotification link ==>> ', JSON.stringify(link));
 
       if (link) {
-        Linking.openURL(link);
+        Linking.openURL(String(link));
         navigation.navigate('notification'); // Navigate to the notification screen
       }
     }
@@ -77,7 +77,7 @@ const Splash = ({navigation}: {navigation: any}) => {
       console.log('remote message link ==>> ', JSON.stringify(link));
 
       if (link) {
-        Linking.openURL(link);
+        Linking.openURL(String(link));
         navigation.navigate('notification');
       }
     });
@@ -91,7 +91,7 @@ const Splash = ({navigation}: {navigation: any}) => {
           console.log('initial notification link ==>> ', JSON.stringify(link));
 
           if (link) {
-            Linking.openURL(link);
+            Linking.openURL(String(link));
             navigation.navigate('notification');
           }
         }
