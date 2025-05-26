@@ -70,8 +70,8 @@ function RootStack({navigation}: any) {
         case EventType.PRESS:
           console.log('User pressed notification', detail.notification);
           const route = detail?.notification?.data?.route; // Extract the route from notification data
-          if (route && navigationRef.isReady()) {
-            navigationRef.navigate(route); // Navigate to the route
+          if (typeof route === 'string' && navigationRef.isReady()) {
+            navigationRef.navigate(route as never); // Navigate to the route
           }
           break;
       }
@@ -122,7 +122,9 @@ function RootStack({navigation}: any) {
       vibration: true, // Enable vibration for the channel
     });
 
-    const route = remoteMessage?.data?.link?.replace('deeplinking://', '');
+    const link = remoteMessage?.data?.link;
+    const route =
+      typeof link === 'string' ? link.replace('deeplinking://', '') : undefined;
 
     await notifee.displayNotification({
       title: remoteMessage.notification.title || 'Notification',
@@ -135,7 +137,7 @@ function RootStack({navigation}: any) {
         },
       },
       data: {
-        route: route, // Specify the route to navigate to
+        route: route ?? '', // Specify the route to navigate to
       },
     });
   });
@@ -150,7 +152,7 @@ function RootStack({navigation}: any) {
         const route = url.replace('deeplinking://', '');
         console.log('Route is :', route); // Log the route to confirm
         if (navigationRef.isReady() && route) {
-          navigationRef.navigate(route);
+          navigationRef.navigate(route as never);
         }
       }
     };
