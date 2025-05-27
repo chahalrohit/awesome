@@ -1,20 +1,20 @@
 // In App.js in a new project
 
+import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 import {
   NavigationContainer,
   createNavigationContainerRef,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
-import {StatusBar, Linking, AppState, Alert} from 'react-native';
+import {AppState, Linking, StatusBar} from 'react-native';
 import Splash from './src/screens/Auth/Splash/Splash';
-import Profile from './src/screens/Profile/Profile';
 import Home from './src/screens/Home/Home';
 import Notification from './src/screens/Notification/Notification';
-import messaging from '@react-native-firebase/messaging';
-import inAppMessaging from '@react-native-firebase/in-app-messaging';
-import notifee, {EventType, AndroidImportance} from '@notifee/react-native';
-import images from './src/utils/images';
+import Profile from './src/screens/Profile/Profile';
+import AddTodoScreen from './src/screens/SQLite/AddTodoScreen';
+import TodoListScreen from './src/screens/SQLite/TodoListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,8 +44,6 @@ function RootStack({navigation}: any) {
   //   await inAppMessaging().setMessagesDisplaySuppressed(true);
   // }
 
-  console.log('Hello World!');
-
   // Request permission for notifications
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
@@ -71,7 +69,9 @@ function RootStack({navigation}: any) {
           console.log('User pressed notification', detail.notification);
           const route = detail?.notification?.data?.route; // Extract the route from notification data
           if (route && navigationRef.isReady()) {
-            navigationRef.navigate(route); // Navigate to the route
+            if (typeof route === 'string') {
+              navigationRef.navigate(route as never); // Navigate to the route
+            }
           }
           break;
       }
@@ -122,7 +122,9 @@ function RootStack({navigation}: any) {
       vibration: true, // Enable vibration for the channel
     });
 
-    const route = remoteMessage?.data?.link?.replace('deeplinking://', '');
+    const link = remoteMessage?.data?.link;
+    const route =
+      typeof link === 'string' ? link.replace('deeplinking://', '') : undefined;
 
     await notifee.displayNotification({
       title: remoteMessage.notification.title || 'Notification',
@@ -135,7 +137,7 @@ function RootStack({navigation}: any) {
         },
       },
       data: {
-        route: route, // Specify the route to navigate to
+        route: route ?? '', // Specify the route to navigate to, fallback to empty string
       },
     });
   });
@@ -150,7 +152,7 @@ function RootStack({navigation}: any) {
         const route = url.replace('deeplinking://', '');
         console.log('Route is :', route); // Log the route to confirm
         if (navigationRef.isReady() && route) {
-          navigationRef.navigate(route);
+          navigationRef.navigate(route as never);
         }
       }
     };
@@ -196,12 +198,14 @@ function RootStack({navigation}: any) {
 
   return (
     <Stack.Navigator
-      // initialRouteName="Splash"
+      initialRouteName="addTodo"
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="splash" component={Splash} />
       <Stack.Screen name="home" component={Home} />
       <Stack.Screen name="profile" component={Profile} />
       <Stack.Screen name="notification" component={Notification} />
+      <Stack.Screen name="addTodo" component={AddTodoScreen} />
+      <Stack.Screen name="todoList" component={TodoListScreen} />
     </Stack.Navigator>
   );
 }
