@@ -4,17 +4,18 @@ import {
   NavigationContainer,
   createNavigationContainerRef,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
-import {StatusBar, Linking, AppState, Alert} from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Linking, AppState, Alert } from 'react-native';
 import Splash from './src/screens/Auth/Splash/Splash';
 import Profile from './src/screens/Profile/Profile';
 import Home from './src/screens/Home/Home';
 import Notification from './src/screens/Notification/Notification';
 import messaging from '@react-native-firebase/messaging';
 import inAppMessaging from '@react-native-firebase/in-app-messaging';
-import notifee, {EventType, AndroidImportance} from '@notifee/react-native';
+import notifee, { EventType, AndroidImportance } from '@notifee/react-native';
 import images from './src/utils/images';
+import SQLite from './src/screens/Sqlite/SQLite';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +33,7 @@ const linking = {
   },
 };
 
-function RootStack({navigation}: any) {
+function RootStack({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     requestUserPermission();
@@ -43,8 +44,6 @@ function RootStack({navigation}: any) {
   // async function bootstrap() {
   //   await inAppMessaging().setMessagesDisplaySuppressed(true);
   // }
-
-  console.log('Hello World!');
 
   // Request permission for notifications
   const requestUserPermission = async () => {
@@ -60,7 +59,7 @@ function RootStack({navigation}: any) {
 
   // Subscribe to events
   useEffect(() => {
-    return notifee.onForegroundEvent(({type, detail}) => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
       console.log('type -->> ', JSON.stringify(type));
       console.log('details -->> ', JSON.stringify(detail));
       switch (type) {
@@ -162,7 +161,7 @@ function RootStack({navigation}: any) {
 
     // Handle case where the app is already running and opened via a deep link
     Linking.getInitialURL().then(url => {
-      if (url) handleDeepLink({url});
+      if (url) handleDeepLink({ url });
     });
 
     return () => {
@@ -198,12 +197,14 @@ function RootStack({navigation}: any) {
 
   return (
     <Stack.Navigator
-      // initialRouteName="Splash"
-      screenOptions={{headerShown: false}}>
+      initialRouteName="sqlite"
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen name="splash" component={Splash} />
       <Stack.Screen name="home" component={Home} />
       <Stack.Screen name="profile" component={Profile} />
       <Stack.Screen name="notification" component={Notification} />
+      <Stack.Screen name="sqlite" component={SQLite} />
     </Stack.Navigator>
   );
 }

@@ -11,7 +11,7 @@ import { navigationRef } from './App';
 import RazoyPay from './src/screens/PaymentGateways/RazorPay/RazoyPay';
 import Button from './src/components/Button';
 import UseState from './src/hooks/UseState';
-import UseMemo from './src/screens/Hooks/UseMemo'
+import UseMemo from './src/screens/Hooks/UseMemo';
 LogBox.ignoreAllLogs();
 
 // Register background handler
@@ -60,4 +60,4 @@ if (!firebase.apps.length) {
 }
 console.log(firebase.apps); // Should return an array with your Firebase app
 
-AppRegistry.registerComponent(appName, () => UseMemo);
+AppRegistry.registerComponent(appName, () => App);
